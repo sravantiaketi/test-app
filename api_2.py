@@ -10,6 +10,14 @@ CLIENT_ID = os.getenv('DOCUSIGN_CLIENT_ID')
 USER_ID = os.getenv('DOCUSIGN_USER_ID')
 REDIRECT_URI = "http://localhost:8000/docusign-callback"  # Make sure this matches your DocuSign app's redirect URI
 
+envelopes_api = EnvelopesApi(api_client)
+try:
+    account_info = envelopes_api.list_status_changes(account_id=ACCOUNT_ID)
+    print("Token is valid, and account info retrieved:", account_info)
+except ApiException as e:
+    print(f"Access token validation failed: {e}")
+
+
 @app.get("/docusign-callback")
 async def docusign_callback(request: Request):
     # Capture the query parameters returned by DocuSign (e.g., authorization code)
