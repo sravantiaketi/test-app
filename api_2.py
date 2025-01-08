@@ -1,43 +1,52 @@
-import requests
+# API endpoint to get template recipient tabs
+get_tabs_url = f"https://demo.docusign.net/restapi/v2.1/accounts/{account_id}/templates/{template_id}/recipients/tabs"
 
-# Replace with your actual credentials and template details
-access_token = "YOUR_ACCESS_TOKEN"
-account_id = "YOUR_ACCOUNT_ID"
-template_id = "YOUR_TEMPLATE_ID"
-
-# API endpoint to fetch template details
-get_template_url = f"https://demo.docusign.net/restapi/v2.1/accounts/{account_id}/templates/{template_id}"
-
-headers = {
-    "Authorization": f"Bearer {access_token}",
-    "Content-Type": "application/json",
-}
-
-response = requests.get(get_template_url, headers=headers)
+response = requests.get(get_tabs_url, headers=headers)
 
 if response.status_code == 200:
-    template_data = response.json()
-    print("Template data fetched successfully!")
+    tabs_data = response.json()
+    print("Tabs data for the template:", tabs_data)
 else:
-    print(f"Failed to fetch template: {response.status_code} - {response.text}")
-# Define the new recipient to add to the existing role
-new_role_recipient = {
+    print(f"Failed to fetch tabs: {response.status_code} - {response.text}")
+
+If the signHereTabs or other tabs are not showing for a new recipient added to a role in a DocuSign template, it's likely due to how tabs are associated with roles in the template. Tabs are not automatically inherited by new recipients unless explicitly defined or mapped correctly.
+
+Here’s how you can address this issue:
+
+Root Cause
+Tabs Are Role-Specific: Tabs in DocuSign templates are associated with specific roles, not recipients. When you add a new recipient to a role, the tabs must either:
+Be explicitly assigned to the recipient, or
+Be inherited from the role if the role is reused properly.
+Recipient-Specific Tab Assignment: If the tabs are not showing, the new recipient might not be properly linked to the role's tabs.
+Solution: Explicitly Assign Tabs to the New Recipient
+You can explicitly assign the existing tabs to the new recipient by fetching the tabs from the role and reapplying them.
+
+Step 1: Fetch Tabs Associated with the Role
+Retrieve the tabs associated with the role from the template.
+
+python
+Copy code
+# API endpoint to get template recipient tabs
+get_tabs_url = f"https://demo.docusign.net/restapi/v2.1/accounts/{account_id}/templates/{template_id}/recipients/tabs"
+
+response = requests.get(get_tabs_url, headers=headers)
+
+if response.status_code == 200:
+    tabs_data = response.json()
+    print("Tabs data for the template:", tabs_data)
+else:
+    print(f"Failed to fetch tabs: {response.status_code} - {response.text}")
+Step 2: Add Recipient with Tabs
+Use the retrieved tabs to assign them to the new recipient. Ensure the recipientId matches the ID of the new recipient you are adding.
+
+python
+Copy code
+# Define the new recipient with the tabs
+new_recipient_with_tabs = {
     "roleName": "Signer",  # Role already defined in the template
-    "name": "New Recipient",  # Name of the new recipient
-    "email": "new_recipient@example.com",  # Email of the new recipient
-    "routingOrder": "1",  # The order of signing (matches existing role)
+    "name": "New Recipient",
+    "email": "new_recipient@example.com",
+    "routingOrder": "1",
+    "recipientId": "2",  # Unique ID for the new recipient
+    "tabs": tabs_data  # Assign the fetched tabs to the new recipient
 }
-
-# Update the roles in the template data
-template_data["recipients"]["signers"].append(new_role_recipient)
-
-# API endpoint to update the template
-update_template_url = f"https://demo.docusign.net/restapi/v2.1/accounts/{account_id}/templates/{template_id}"
-
-# Send the updated template back to DocuSign
-response = requests.put(update_template_url, json=template_data, headers=headers)
-
-if response.status_code == 200:
-    print("Template updated successfully with new recipient!")
-else:
-    print(f"Failed to update template: {response.status_code} - {response.text}")
