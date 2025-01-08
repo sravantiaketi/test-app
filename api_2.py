@@ -10,7 +10,7 @@ url = f"https://demo.docusign.net/restapi/v2.1/accounts/{account_id}/envelopes"
 
 # Payload to create the envelope
 payload = {
-    "templateId": template_id,
+    "templateId": 7a27f395-7429-48db-9e17-381fb4e53acf,
     "templateRoles": [
         {
             "email": "recipient@example.com",
