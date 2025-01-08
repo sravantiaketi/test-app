@@ -1,24 +1,43 @@
-# Define the recipient details for the new recipient to be added to the existing role
-new_recipient = {
-    "roleName": "Signer",  # The role name that already exists in the template
-    "name": "New Recipient",  # Name of the new recipient
-    "email": "new_recipient@example.com",  # Optional email for the new recipient
-    "routingOrder": "1",  # The order of signing (should match the existing role's order)
-}
+import requests
 
-# API endpoint to update the roles of the template
-update_roles_url = f"https://demo.docusign.net/restapi/v2.1/accounts/{account_id}/templates/{template_id}/roles"
+# Replace with your actual credentials and template details
+access_token = "YOUR_ACCESS_TOKEN"
+account_id = "YOUR_ACCOUNT_ID"
+template_id = "YOUR_TEMPLATE_ID"
 
-# Headers
+# API endpoint to fetch template details
+get_template_url = f"https://demo.docusign.net/restapi/v2.1/accounts/{account_id}/templates/{template_id}"
+
 headers = {
     "Authorization": f"Bearer {access_token}",
     "Content-Type": "application/json",
 }
 
-# Send the update request to modify the template roles
-response = requests.put(update_roles_url, json=[new_recipient], headers=headers)
+response = requests.get(get_template_url, headers=headers)
 
 if response.status_code == 200:
-    print("New recipient added to the existing role successfully!")
+    template_data = response.json()
+    print("Template data fetched successfully!")
 else:
-    print(f"Failed to add recipient to role: {response.status_code} - {response.text}")
+    print(f"Failed to fetch template: {response.status_code} - {response.text}")
+# Define the new recipient to add to the existing role
+new_role_recipient = {
+    "roleName": "Signer",  # Role already defined in the template
+    "name": "New Recipient",  # Name of the new recipient
+    "email": "new_recipient@example.com",  # Email of the new recipient
+    "routingOrder": "1",  # The order of signing (matches existing role)
+}
+
+# Update the roles in the template data
+template_data["recipients"]["signers"].append(new_role_recipient)
+
+# API endpoint to update the template
+update_template_url = f"https://demo.docusign.net/restapi/v2.1/accounts/{account_id}/templates/{template_id}"
+
+# Send the updated template back to DocuSign
+response = requests.put(update_template_url, json=template_data, headers=headers)
+
+if response.status_code == 200:
+    print("Template updated successfully with new recipient!")
+else:
+    print(f"Failed to update template: {response.status_code} - {response.text}")
