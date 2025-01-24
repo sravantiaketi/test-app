@@ -1,3 +1,4 @@
+import base64
 import requests
 
 # Configuration
@@ -5,74 +6,37 @@ base_url = "https://demo.docusign.net/restapi"
 account_id = "YOUR_ACCOUNT_ID"
 access_token = "YOUR_ACCESS_TOKEN"
 
-# Envelope creation endpoint
-url = f"{base_url}/v2.1/accounts/{account_id}/envelopes"
-
-# Request body
-request = {
-    "emailSubject": "Please sign these documents",
-    "status": "sent",
-    "compositeTemplates": [
-        {
-            "serverTemplates": [
-                {
-                    "sequence": "1",
-                    "templateId": "TEMPLATE_ID_1"
-                }
-            ],
-            "inlineTemplates": [
-                {
-                    "sequence": "1",
-                    "recipients": {
-                        "signers": [
-                            {
-                                "email": "recipient1@example.com",
-                                "name": "Recipient One",
-                                "roleName": "Signer1"
-                            }
-                        ]
-                    }
-                }
-            ]
-        },
-        {
-            "serverTemplates": [
-                {
-                    "sequence": "2",
-                    "templateId": "TEMPLATE_ID_2"
-                }
-            ],
-            "inlineTemplates": [
-                {
-                    "sequence": "2",
-                    "recipients": {
-                        "signers": [
-                            {
-                                "email": "recipient2@example.com",
-                                "name": "Recipient Two",
-                                "roleName": "Signer2"
-                            }
-                        ]
-                    }
-                }
-            ]
-        }
-    ]
+# Step 1: Create Bulk List
+bulk_list_url = f"{base_url}/v2.1/accounts/{account_id}/bulk_send_lists"
+bulk_list_payload = {
+    "name": "Bulk List Example",
+    "bulkRecipients": {
+        "recipients": [
+            {"name": "Recipient One", "email": "recipient1@example.com", "recipientId": "1"},
+            {"name": "Recipient Two", "email": "recipient2@example.com", "recipientId": "2"}
+        ]
+    }
 }
+headers = {"Authorization": f"Bearer {access_token}", "Content-Type": "application/json"}
+response = requests.post(bulk_list_url, json=bulk_list_payload, headers=headers)
+bulk_list_id = response.json()["bulkSendListId"]
 
-# Headers
-headers = {
-    "Authorization": f"Bearer {access_token}",
-    "Content-Type": "application/json"
+# Step 2: Create Envelope
+document_content = base64.b64encode(open("document.pdf", "rb").read()).decode("utf-8")
+envelope_url = f"{base_url}/v2.1/accounts/{account_id}/envelopes"
+envelope_payload = {
+    "emailSubject": "Please sign this document",
+    "documents": [{"documentBase64": document_content, "name": "Document", "fileExtension": "pdf", "documentId": "1"}],
+    "recipients": {"signers": [{"recipientId": "1", "name": "Placeholder", "email": "placeholder@example.com"}]},
+    "status": "created"
 }
+response = requests.post(envelope_url, json=envelope_payload, headers=headers)
+envelope_id = response.json()["envelopeId"]
 
-# Send the request
-response = requests.post(url, json=payload, headers=headers)
+# Step 3: Bulk Send
+bulk_send_url = f"{base_url}/v2.1/accounts/{account_id}/envelopes/{envelope_id}/bulk_send"
+bulk_send_payload = {"bulkSendListId": bulk_list_id}
+response = requests.post(bulk_send_url, json=bulk_send_payload, headers=headers)
+batch_id = response.json()["batchId"]
 
-# Check response
-if response.status_code == 201:
-    print("Envelope created successfully!")
-    print("Envelope ID:", response.json().get("envelopeId"))
-else:
-    print(f"Failed to create envelope: {response.status_code}")
-    print(response.text)
+print(f"Bulk Send initiated. Batch ID: {batch_id}")
