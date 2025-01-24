@@ -14,8 +14,11 @@ response = requests.get(url, headers=headers)
 
 if response.status_code == 200:
     # Save the document locally
-    with open("signed_document.pdf", "wb") as file:
-        file.write(response.content)
-    print("Signed document saved as 'signed_document.pdf'")
+   if response.content[:4] == b"%PDF":
+        with open("signed_document.pdf", "wb") as file:
+            file.write(response.content)
+        print("Signed document saved successfully!")
+    else:
+        print("The response is not a valid PDF.")
 else:
     print(f"Failed to download document: {response.status_code} - {response.text}")
