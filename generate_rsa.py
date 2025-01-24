@@ -9,7 +9,7 @@ access_token = "YOUR_ACCESS_TOKEN"
 url = f"{base_url}/v2.1/accounts/{account_id}/envelopes"
 
 # Request body
-payload = {
+request = {
     "emailSubject": "Please sign these documents",
     "status": "sent",
     "compositeTemplates": [
