@@ -7,8 +7,7 @@ cNOnb2rP74VF6HUeeEoFZ/L7Lhfia5bEtbwDjJ+NvoNeW2XO66CeTiKAK7PJT4yf
 CnatSxaJDOw5AUzgqPV67cbZLR8ke8yr0iGAfYzDbSfxEx5X5PNefUeDbvqlYlhD
 TwIDAQAB
 -----END PUBLIC KEY-----
-sdk-qa-privt-app-subscribe-1737976571
-sdk-qa-cnfct-app-subscribe-1737976569
+328d4bed-fa9f-4bef-969c-1cb58af4aeeb
 -----BEGIN RSA PRIVATE KEY-----
 MIIEowIBAAKCAQEAwF5f0fGXnJPsVOssw8gAvD9QwW/HoNZ7KJT6vHaTrjUTSOfz
 UUsubgNPxfNN/ZzPHw6ivyQM9VrP2YMDwqBEcs9OrJTBpIdGbTnJJWf7sqAkePZ2
