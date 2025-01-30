@@ -1,42 +1,98 @@
-import base64
 import requests
 
-# Configuration
-base_url = "https://demo.docusign.net/restapi"
-account_id = "YOUR_ACCOUNT_ID"
-access_token = "YOUR_ACCESS_TOKEN"
+# Set variables
+ACCESS_TOKEN = "YOUR_ACCESS_TOKEN"
+ACCOUNT_ID = "YOUR_ACCOUNT_ID"
+ENVELOPE_ID = "YOUR_ENVELOPE_ID"
 
-# Step 1: Create Bulk List
-bulk_list_url = f"{base_url}/v2.1/accounts/{account_id}/bulk_send_lists"
-bulk_list_payload = {
-    "name": "Bulk List Example",
-    "bulkRecipients": {
-        "recipients": [
-            {"name": "Recipient One", "email": "recipient1@example.com", "recipientId": "1"},
-            {"name": "Recipient Two", "email": "recipient2@example.com", "recipientId": "2"}
+HEADERS = {
+    "Authorization": f"Bearer {ACCESS_TOKEN}",
+    "Accept": "application/json"
+}
+
+# Get document list from envelope
+url = f"https://demo.docusign.net/restapi/v2.1/accounts/{ACCOUNT_ID}/envelopes/{ENVELOPE_ID}/documents"
+response = requests.get(url, headers=HEADERS)
+
+if response.status_code == 200:
+    documents = response.json().get("documents", [])
+    print("Documents in Envelope:", documents)
+else:
+    print("Error:", response.json())
+
+
+
+
+
+import os
+
+DOWNLOAD_PATH = "documents"
+
+# Ensure directory exists
+os.makedirs(DOWNLOAD_PATH, exist_ok=True)
+
+# Loop through documents
+for doc in documents:
+    doc_id = doc["documentId"]
+    doc_name = doc["name"]
+
+    # Get document content
+    doc_url = f"https://demo.docusign.net/restapi/v2.1/accounts/{ACCOUNT_ID}/envelopes/{ENVELOPE_ID}/documents/{doc_id}"
+    doc_response = requests.get(doc_url, headers=HEADERS)
+
+    if doc_response.status_code == 200:
+        file_path = os.path.join(DOWNLOAD_PATH, doc_name)
+        with open(file_path, "wb") as file:
+            file.write(doc_response.content)
+        print(f"Downloaded: {doc_name}")
+    else:
+        print(f"Failed to fetch {doc_name}")
+
+
+
+
+import json
+
+# New envelope details
+NEW_ENVELOPE_URL = f"https://demo.docusign.net/restapi/v2.1/accounts/{ACCOUNT_ID}/envelopes"
+
+# Define documents for new envelope
+document_objects = []
+for doc in documents:
+    doc_id = doc["documentId"]
+    doc_name = doc["name"]
+
+    with open(os.path.join(DOWNLOAD_PATH, doc_name), "rb") as file:
+        encoded_content = base64.b64encode(file.read()).decode()
+
+    document_objects.append({
+        "documentId": doc_id,
+        "name": doc_name,
+        "fileExtension": "pdf",
+        "documentBase64": encoded_content
+    })
+
+# Define envelope payload
+payload = {
+    "emailSubject": "New Envelope from Existing Documents",
+    "documents": document_objects,
+    "recipients": {
+        "signers": [
+            {
+                "email": "recipient@example.com",
+                "name": "Recipient Name",
+                "recipientId": "1",
+                "routingOrder": "1"
+            }
         ]
-    }
+    },
+    "status": "sent"
 }
-headers = {"Authorization": f"Bearer {access_token}", "Content-Type": "application/json"}
-response = requests.post(bulk_list_url, json=bulk_list_payload, headers=headers)
-bulk_list_id = response.json()["bulkSendListId"]
 
-# Step 2: Create Envelope
-document_content = base64.b64encode(open("document.pdf", "rb").read()).decode("utf-8")
-envelope_url = f"{base_url}/v2.1/accounts/{account_id}/envelopes"
-envelope_payload = {
-    "emailSubject": "Please sign this document",
-    "documents": [{"documentBase64": document_content, "name": "Document", "fileExtension": "pdf", "documentId": "1"}],
-    "recipients": {"signers": [{"recipientId": "1", "name": "Placeholder", "email": "placeholder@example.com"}]},
-    "status": "created"
-}
-response = requests.post(envelope_url, json=envelope_payload, headers=headers)
-envelope_id = response.json()["envelopeId"]
+# Send request to create new envelope
+create_response = requests.post(NEW_ENVELOPE_URL, headers={**HEADERS, "Content-Type": "application/json"}, data=json.dumps(payload))
 
-# Step 3: Bulk Send
-bulk_send_url = f"{base_url}/v2.1/accounts/{account_id}/envelopes/{envelope_id}/bulk_send"
-bulk_send_payload = {"bulkSendListId": bulk_list_id}
-response = requests.post(bulk_send_url, json=bulk_send_payload, headers=headers)
-batch_id = response.json()["batchId"]
-
-print(f"Bulk Send initiated. Batch ID: {batch_id}")
+if create_response.status_code == 201:
+    print("New Envelope Created:", create_response.json()["envelopeId"])
+else:
+    print("Error:", create_response.json())
