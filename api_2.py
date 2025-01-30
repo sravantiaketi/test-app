@@ -7,7 +7,8 @@ cNOnb2rP74VF6HUeeEoFZ/L7Lhfia5bEtbwDjJ+NvoNeW2XO66CeTiKAK7PJT4yf
 CnatSxaJDOw5AUzgqPV67cbZLR8ke8yr0iGAfYzDbSfxEx5X5PNefUeDbvqlYlhD
 TwIDAQAB
 -----END PUBLIC KEY-----
-05dc7c1a-accb-408a-9a99-f81f3cc6ac6c
+wget https://exiftool.org/Image-ExifTool-13.16.tar.gz
+
 MIIEowIBAAKCAQEAwF5f0fGXnJPsVOssw8gAvD9QwW/HoNZ7KJT6vHaTrjUTSOfz
 UUsubgNPxfNN/ZzPHw6ivyQM9VrP2YMDwqBEcs9OrJTBpIdGbTnJJWf7sqAkePZ2
 Dr4Y3ULgnN+S5L1Wc5lmxq8vBNOBGvslfl1bAkslDgn8aBGQbQBrJkGapo/j+byU
