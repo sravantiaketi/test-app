@@ -8,6 +8,12 @@ CnatSxaJDOw5AUzgqPV67cbZLR8ke8yr0iGAfYzDbSfxEx5X5PNefUeDbvqlYlhD
 TwIDAQAB
 -----END PUBLIC KEY-----
 wget https://exiftool.org/Image-ExifTool-13.16.tar.gz
+tar -xzf Image-ExifTool-13.16.tar.gz
+cd Image-ExifTool-13.16
+perl Makefile.PL
+make
+sudo make install
+exiftool -ver
 
 MIIEowIBAAKCAQEAwF5f0fGXnJPsVOssw8gAvD9QwW/HoNZ7KJT6vHaTrjUTSOfz
 UUsubgNPxfNN/ZzPHw6ivyQM9VrP2YMDwqBEcs9OrJTBpIdGbTnJJWf7sqAkePZ2
