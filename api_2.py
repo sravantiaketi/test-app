@@ -15,6 +15,9 @@ make
 sudo make install
 exiftool -ver
 
+3f935327-b24e-4d44-a646-fad37d579f94
+
+
 MIIEowIBAAKCAQEAwF5f0fGXnJPsVOssw8gAvD9QwW/HoNZ7KJT6vHaTrjUTSOfz
 UUsubgNPxfNN/ZzPHw6ivyQM9VrP2YMDwqBEcs9OrJTBpIdGbTnJJWf7sqAkePZ2
 Dr4Y3ULgnN+S5L1Wc5lmxq8vBNOBGvslfl1bAkslDgn8aBGQbQBrJkGapo/j+byU
