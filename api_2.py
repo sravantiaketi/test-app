@@ -7,13 +7,10 @@ cNOnb2rP74VF6HUeeEoFZ/L7Lhfia5bEtbwDjJ+NvoNeW2XO66CeTiKAK7PJT4yf
 CnatSxaJDOw5AUzgqPV67cbZLR8ke8yr0iGAfYzDbSfxEx5X5PNefUeDbvqlYlhD
 TwIDAQAB
 -----END PUBLIC KEY-----
-wget https://exiftool.org/Image-ExifTool-13.16.tar.gz
-tar -xzf Image-ExifTool-13.16.tar.gz
-cd Image-ExifTool-13.16
-perl Makefile.PL
-make
-sudo make install
-exiftool -ver
+sudo snap remove gs
+sudo rm -rf /var/snap/gs
+sudo rm -rf ~/snap/gs
+
 
 3f935327-b24e-4d44-a646-fad37d579f94
 
