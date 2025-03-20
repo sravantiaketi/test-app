@@ -7,10 +7,7 @@ cNOnb2rP74VF6HUeeEoFZ/L7Lhfia5bEtbwDjJ+NvoNeW2XO66CeTiKAK7PJT4yf
 CnatSxaJDOw5AUzgqPV67cbZLR8ke8yr0iGAfYzDbSfxEx5X5PNefUeDbvqlYlhD
 TwIDAQAB
 -----END PUBLIC KEY-----
-created 2 apps “autotest-lj167 “, “autotest-ur120”
-b232cac2-5e52-4f70-a7cb-66af6e6ebe1d
-
-3cf82392-b125-47f8-a0a3-c1e1a87b2200
+78d2aa11-6d5d-49c5-9cd1-21367912aad9
 
 MIIEowIBAAKCAQEAwF5f0fGXnJPsVOssw8gAvD9QwW/HoNZ7KJT6vHaTrjUTSOfz
 UUsubgNPxfNN/ZzPHw6ivyQM9VrP2YMDwqBEcs9OrJTBpIdGbTnJJWf7sqAkePZ2
